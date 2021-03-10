@@ -1,0 +1,176 @@
+{
+  "version": 1,
+  "cli": {
+    "defaultCollection": "@nrwl/angular"
+  },
+  "defaultProject": "book-store",
+  "schematics": {
+    "@nrwl/workspace": {
+      "library": {
+        "linter": "tslint"
+      }
+    },
+    "@nrwl/cypress": {
+      "cypress-project": {
+        "linter": "tslint"
+      }
+    },
+    "@nrwl/node": {
+      "application": {
+        "linter": "tslint"
+      },
+      "library": {
+        "linter": "tslint"
+      }
+    },
+    "@nrwl/nest": {
+      "application": {
+        "linter": "tslint"
+      },
+      "library": {
+        "linter": "tslint"
+      }
+    },
+    "@nrwl/express": {
+      "application": {
+        "linter": "tslint"
+      },
+      "library": {
+        "linter": "tslint"
+      }
+    },
+    "@nrwl/angular:application": {
+      "style": "css",
+      "linter": "tslint",
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress"
+    },
+    "@nrwl/angular:library": {
+      "style": "css",
+      "linter": "tslint",
+      "unitTestRunner": "jest"
+    },
+    "@nrwl/angular:component": {
+      "style": "css"
+    }
+  },
+  "projects": {
+    "book-store": {
+      "projectType": "application",
+      "root": "apps/book-store",
+      "sourceRoot": "apps/book-store/src",
+      "prefix": "assignment",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/book-store",
+            "index": "apps/book-store/src/index.html",
+            "main": "apps/book-store/src/main.ts",
+            "polyfills": "apps/book-store/src/polyfills.ts",
+            "tsConfig": "apps/book-store/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "apps/book-store/src/favicon.ico",
+              "apps/book-store/src/assets"
+            ],
+            "styles": ["apps/book-store/src/styles.css"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/book-store/src/environments/environment.ts",
+                  "with": "apps/book-store/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "book-store:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "book-store:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "book-store:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/book-store/tsconfig.app.json",
+              "apps/book-store/tsconfig.spec.json",
+              "apps/book-store/tsconfig.editor.json"
+            ],
+            "exclude": ["**/node_modules/**", "!apps/book-store/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/book-store"],
+          "options": {
+            "jestConfig": "apps/book-store/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "book-store-e2e": {
+      "root": "apps/book-store-e2e",
+      "sourceRoot": "apps/book-store-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/book-store-e2e/cypress.json",
+            "tsConfig": "apps/book-store-e2e/tsconfig.e2e.json",
+            "devServerTarget": "book-store:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "book-store:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": ["apps/book-store-e2e/tsconfig.e2e.json"],
+            "exclude": ["**/node_modules/**", "!apps/book-store-e2e/**/*"]
+          }
+        }
+      }
+    }
+  }
+}
