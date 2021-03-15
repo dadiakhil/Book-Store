@@ -74,8 +74,14 @@
               "apps/book-store/src/favicon.ico",
               "apps/book-store/src/assets"
             ],
-            "styles": ["apps/book-store/src/styles.css"],
-            "scripts": []
+            "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "apps/book-store/src/styles.css",
+              "./node_modules/bootstrap/dist/css/bootstrap.min.css"        ],
+              "scripts": [
+                "./node_modules/jquery/dist/jquery.min.js",
+                "./node_modules/bootstrap/dist/js/bootstrap.min.js"
+              ]
           },
           "configurations": {
             "production": {
@@ -132,12 +138,17 @@
               "apps/book-store/tsconfig.spec.json",
               "apps/book-store/tsconfig.editor.json"
             ],
-            "exclude": ["**/node_modules/**", "!apps/book-store/**/*"]
+            "exclude": [
+              "**/node_modules/**",
+              "!apps/book-store/**/*"
+            ]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/apps/book-store"],
+          "outputs": [
+            "coverage/apps/book-store"
+          ],
           "options": {
             "jestConfig": "apps/book-store/jest.config.js",
             "passWithNoTests": true
@@ -166,8 +177,13 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": ["apps/book-store-e2e/tsconfig.e2e.json"],
-            "exclude": ["**/node_modules/**", "!apps/book-store-e2e/**/*"]
+            "tsConfig": [
+              "apps/book-store-e2e/tsconfig.e2e.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "!apps/book-store-e2e/**/*"
+            ]
           }
         }
       }

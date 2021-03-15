@@ -1,0 +1,26 @@
+
+    <h2 class="bookHeader">Book Details</h2>
+  
+    <mat-card class="example-card" *ngIf="bookDetails">
+      <mat-card-header class="cardHeader">
+        <mat-card-title>{{ bookDetails.title }}</mat-card-title>
+        <mat-card-subtitle
+          >Price: {{ bookDetails.price | currency }}</mat-card-subtitle
+        >
+      </mat-card-header>
+      <img class="previewImage"
+        mat-card-image
+        [src]="bookDetails.imageLink"
+        [alt]="bookDetails.title"
+      />
+      <mat-card-content>
+        <p>Authors: {{ bookDetails.authors.join(',') }}</p>
+        <!-- <p> Description: {{ bookDetails.description }}</p> -->
+      </mat-card-content>
+      <mat-card-actions>
+        <button class="addToCart" mat-raised-button color="primary" (click)="addBookToCart()" [disabled]="itemBought || ( collectionIds.includes( bookDetails.id ) )"> {{ itemBought == true ? 'Added To Cart' : 'Add To Cart' }}</button>
+        <button class="buyNow" mat-raised-button color="accent" (click)="buyNow()" [disabled]="itemBought || ( collectionIds.includes( bookDetails.id ) )">Buy Now</button>
+        <button class="removeBookFromCart" mat-raised-button (click)="removeBookFromCart()" [disabled]="!itemBought">Remove</button>
+      </mat-card-actions>
+    </mat-card>
+ 

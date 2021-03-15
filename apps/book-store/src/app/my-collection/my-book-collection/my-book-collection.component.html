@@ -1,0 +1,24 @@
+<mat-card class="noCollectionItems" *ngIf="!collectionBooks.length">
+    No Books Added to Collection!
+  </mat-card>
+  
+  <mat-accordion class="collectionItemsBlock" *ngIf="collectionBooks.length">
+    <mat-expansion-panel *ngFor="let bookDetails of collectionBooks">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{ bookDetails.title }}
+        </mat-panel-title>
+        <mat-panel-description>
+          {{ bookDetails.authors }}
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <p>Publisher: {{ bookDetails.publisher }}</p>
+      <div class="card bg-info">
+        <div class="card-body text-center">
+          <p class="card-text">Delivery Details</p>
+          <p class="card-text">Name: {{ bookDetails.deliveryAddress.name }}</p>
+          <p class="card-text">Address: {{ bookDetails.deliveryAddress.address }}</p>
+        </div>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>

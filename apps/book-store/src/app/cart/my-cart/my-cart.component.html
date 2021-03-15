@@ -1,0 +1,57 @@
+<h2 style="padding-top: 50px;text-align: center;">My Cart</h2>
+
+<mat-card class="noCartItems" *ngIf="!cartDetails.length">
+  No Books Added to Cart!
+</mat-card>
+
+<mat-accordion class="cartBlock" *ngIf="cartDetails.length">
+  <mat-expansion-panel *ngFor="let bookDetails of cartDetails">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        {{ bookDetails.title }}
+      </mat-panel-title>
+      <mat-panel-description>
+        {{ bookDetails.price | currency }}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <p>Publisher: {{ bookDetails.publisher }}</p>
+    <button class="removeBook" mat-raised-button (click)="removeBookFromCart(bookDetails.id)">Remove</button>
+  </mat-expansion-panel>
+  <mat-expansion-panel  [expanded]="expandAddressBlock">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Billing Details
+      </mat-panel-title>
+      <mat-panel-description>
+        Total: {{ cartValue | currency }}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <div class="example-container">
+      Total Books: {{ cartDetails.length }} 
+    </div>
+  </mat-expansion-panel>
+  <mat-expansion-panel  [expanded]="expandAddressBlock">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Delivery Address
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="example-container">
+      <mat-form-field>
+        <input type="text" matInput placeholder="Name" [(ngModel)]="name">
+      </mat-form-field>
+
+      <mat-form-field>
+        <input type="number" matInput placeholder="Mobile No." [(ngModel)]="mobileNo">
+      </mat-form-field>
+    
+      <mat-form-field>
+        <textarea matInput placeholder="Address" [(ngModel)]="address"></textarea>
+      </mat-form-field>
+    </div>
+  </mat-expansion-panel>
+</mat-accordion>
+
+<div *ngIf="cartDetails.length" class="paymentBlock">
+    <button mat-raised-button color="primary" (click)="payNow()">Pay Now!</button>
+</div>

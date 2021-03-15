@@ -1,0 +1,34 @@
+<div class="row">
+    <div class="col-md-4 hidden-xs"></div>
+    <div class="col-md-4">
+        <form class="example-form"[formGroup]="bookSearch" (ngSubmit)="getBookList()">
+            <span>
+            <input type="text" formControlName="bookName" placeholder="Search." >&nbsp;
+                <button type="submit"  [disabled]="bookSearch.invalid" class="searchBtn" style="border:2px solid gray;">
+                    <mat-icon>search</mat-icon>
+                </button>
+            </span>
+          </form>
+    </div>
+    <div class="col-md-4 hidden-xs"></div>
+</div>
+<br>
+<p class="errMsg" *ngIf="errorMessage.length"> {{ errorMessage }}</p>
+<div class="row booksBlock" *ngIf="booksList.length">
+    <div class="col-4" *ngFor="let bookDetails of booksList">
+        <div class="card cardBlock">
+            <img class="card-img-top mx-auto d-block rounded cardImage" [src]="bookDetails.imageLink" alt="{{ bookDetails.title }}">
+            <div class="card-body">
+                <p class="card-text">Price: {{ bookDetails.price | currency }}</p>
+                <a routerLink='bookdetails/{{ bookDetails.id }}' class="btn btn-primary"> {{ collectionIds.includes( bookDetails.id ) ? 'In Collection' : (cartItemIds.indexOf( bookDetails.id ) > -1 ? 'Added To Cart' : 'View Details') }}</a>
+            </div>
+        </div>
+        <br>
+    </div>
+</div>
+
+<div *ngIf="recentSearchs.length && !booksList.length">
+    <p class="noBooks">No books to show</p>
+</div>
+
+

@@ -1,0 +1,20 @@
+.paymentBlock {
+    padding-top: 20px;
+}
+
+.paymentBlock button {
+    float: right;
+}
+
+.removeBook {
+    float: right;
+}
+
+.example-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .example-container > * {
+    width: 100%;
+  }
