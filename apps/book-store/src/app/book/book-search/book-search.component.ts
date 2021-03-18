@@ -31,12 +31,8 @@ export class BookSearchComponent implements OnInit, OnDestroy {
   public bookSearch: FormGroup;
 
   // Observers for redux events
-  private booksListSub: Subscription;
-  private booksFetchSub: Subscription;
-  private cartSub: Subscription;
-  private searchListSub: Subscription;
-  private collectionSub: Subscription;
-  
+  private bookSubStubs = new Subscription()
+
   constructor( private store: Store<{ booksList: Book[],
                                       apiError: any, cartList: any,
                                       searchList: string[]
@@ -50,24 +46,24 @@ export class BookSearchComponent implements OnInit, OnDestroy {
     this.errorMessage = '';
 
     // initialising redux data change listerners(Observers)
-    this.booksListSub = this.store.pipe(select(ReduceMappers.booksList)).subscribe( ( newBooksList: Book[] ) => {
+    this.bookSubStubs.add(this.store.pipe(select(ReduceMappers.booksList)).subscribe( ( newBooksList: Book[] ) => {
       this.booksList = newBooksList;
-    });
-    this.booksFetchSub = this.store.select(ReduceMappers.apiError).subscribe( ( errMessage ) => {
+    }));
+    this.bookSubStubs.add(this.store.select(ReduceMappers.apiError).subscribe( ( errMessage ) => {
       // Show error popup to user
       if( errMessage != null ) {
         this.errorMessage = 'Error in fetching books data';
       }
-    });
-    this.cartSub = this.store.select(selectCartIds).subscribe( ( ids ) => {
+    }));
+    this.bookSubStubs.add(this.store.select(selectCartIds).subscribe( ( ids ) => {
       this.cartItemIds = ids;
-    });
-    this.searchListSub = this.store.select(ReduceMappers.searchList).subscribe( ( searchList ) => {
+    }));
+    this.bookSubStubs.add(this.store.select(ReduceMappers.searchList).subscribe( ( searchList ) => {
       this.recentSearchs = searchList;
-    });
-    this.collectionSub = this.store.select( selectCollectionIds ).subscribe( ( ids ) => {
+    }));
+    this.bookSubStubs.add(this.store.select( selectCollectionIds ).subscribe( ( ids ) => {
       this.collectionIds = ids;
-    });
+    }));
   }
 
   // function used to get the books searched by user
@@ -94,13 +90,7 @@ export class BookSearchComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     // Unsubscribing all redux subscriptions to avoid memory leaks
-    if( this.booksListSub ) {
-      this.booksListSub.unsubscribe();
-      this.booksFetchSub.unsubscribe();
-      this.searchListSub.unsubscribe();
-      this.cartSub.unsubscribe();
-      this.collectionSub.unsubscribe();
-    }
+    this.bookSubStubs.unsubscribe()
   }
-
+ 
 }

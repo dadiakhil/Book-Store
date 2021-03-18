@@ -36,10 +36,8 @@ export class MyCartComponent implements OnInit, OnDestroy {
   private existingAddress: Address;
 
   // Subscriptions to fetch data from store
-  private cartSub: Subscription;
-  private collectionSub: Subscription;
-  private addressSub: Subscription;
-
+  private bookCartSubStubs = new Subscription();
+  
   constructor( private store: Store<{CartState, CollectionState, addressList: Address[]}>,
                 private _snackBar: MatSnackBar) { }
 
@@ -47,12 +45,12 @@ export class MyCartComponent implements OnInit, OnDestroy {
     // Initialising varibles
     this.clearCartDetails = false;
 
-    this.cartSub = this.store.select(selectAllCartItems).subscribe( ( cartData ) => {
+    this.bookCartSubStubs.add(this.store.select(selectAllCartItems).subscribe( ( cartData ) => {
       this.cartDetails = cartData;
 
       this.calculateCartValue();
-    });
-    this.collectionSub = this.store.select(selectAllCollectionItems).subscribe( () => {
+    }));
+    this.bookCartSubStubs.add(this.store.select(selectAllCollectionItems).subscribe( () => {
       if( this.clearCartDetails === true ) {
         const cartAction = new RemoveAllBooksFromCartAction();
 
@@ -60,8 +58,8 @@ export class MyCartComponent implements OnInit, OnDestroy {
 
         this.clearCartDetails = false;
       }
-    });
-    this.addressSub = this.store.select(ReduceMappers.addressList).subscribe( ( addressDetails ) => {
+    }));
+    this.bookCartSubStubs.add(this.store.select(ReduceMappers.addressList).subscribe( ( addressDetails ) => {
       if( addressDetails && addressDetails.length ) {
         this.existingAddress = addressDetails[0];
 
@@ -71,7 +69,7 @@ export class MyCartComponent implements OnInit, OnDestroy {
           this.mobileNo = this.existingAddress.mobileNo;
         }
       }
-    });
+    }));
 
     this.expandAddressBlock = false;
   }
@@ -135,11 +133,7 @@ export class MyCartComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     // UnSubscribing all redux subscribers to avoid memory leaks
-    if( this.cartSub ) {
-      this.cartSub.unsubscribe();
-      this.collectionSub.unsubscribe();
-      this.addressSub.unsubscribe();
-    }
+    this.bookCartSubStubs.unsubscribe();
   }
 
 }

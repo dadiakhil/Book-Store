@@ -33,9 +33,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
   public collectionIds: string[] | number[];
 
   // redux Observables
-  private booksListSub: Subscription;
-  private cartObjSub: Subscription;
-  private collectionSub: Subscription;
+  private bookSubStubs = new Subscription();
 
   // activate route to fetch params from URL, router to redirect to other URLs
   constructor( private store: Store<{ booksList: Book[], cartList: any  }>,
@@ -44,15 +42,15 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     // Local fields initialization
-    this.booksListSub = this.store.select(ReduceMappers.booksList).subscribe( ( booksList ) => {
+    this.bookSubStubs.add(this.store.select(ReduceMappers.booksList).subscribe( ( booksList ) => {
       this.books = booksList;
-    });;
-    this.cartObjSub = this.store.select(ReduceMappers.cartList).subscribe( ( cartList ) => {
+    }));;
+    this.bookSubStubs.add(this.store.select(ReduceMappers.cartList).subscribe( ( cartList ) => {
       this.cartList = cartList;    
-    });
-    this.collectionSub = this.store.select( selectCollectionIds ).subscribe( ( ids ) => {
+    }));
+    this.bookSubStubs.add(this.store.select( selectCollectionIds ).subscribe( ( ids ) => {
       this.collectionIds = ids;
-    });
+    }));
     
     this.itemBought = false;
 
@@ -118,11 +116,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     // Unsubscribing redux subscribers to avoid memory leaks
-    if( this.booksListSub ) {
-      this.booksListSub.unsubscribe();
-      this.cartObjSub.unsubscribe();
-      this.collectionSub.unsubscribe();
-    }
+    this.bookSubStubs.unsubscribe()
   }
 
   getStoreRef(): Store<{ booksList: Book[], cartList: any  }>{
