@@ -9,6 +9,7 @@ export enum SearchActionTypes {
 export class SearchAction implements Action {
     readonly type:string;
     newSearch?: any;
+    error?: string
 }
 
 export class AddToSearchListAction implements SearchAction {

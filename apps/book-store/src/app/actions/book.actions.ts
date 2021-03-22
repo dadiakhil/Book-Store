@@ -12,7 +12,8 @@ export enum BooksActionTypes {
 
 export class BooksAction implements Action {
     readonly type: string;
-    payload: any;
+    payload?: Book[];
+    error?: string;
 }
 
 export class ChangeBooks implements BooksAction {
@@ -24,5 +25,5 @@ export class ChangeBooks implements BooksAction {
 export class FetchBooks implements BooksAction {
     readonly type = BooksActionTypes.Fetch;
 
-    constructor( public payload: string ) {}
+    constructor( public error: string ) {}
 }

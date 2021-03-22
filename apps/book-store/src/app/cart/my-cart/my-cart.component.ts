@@ -6,12 +6,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { RemoveBookFromCartAction, RemoveAllBooksFromCartAction } from '../../actions/cart.actions';
-import { selectAllCartItems } from '../../reducers/cart.reducer';
-import { AddMultipleToCollectionAction } from '../../actions/collection.actions';
+import {RemoveAllBooksFromCartAction } from '../../actions/cart.actions';
 import { UpdateAddressAction } from '../../actions/address.actions';
-import { selectAllCollectionItems } from '../../reducers/collection.reducer';
-
+import {CartFacade} from '../../facades/cart.facade';
+import {CollectionFacade} from '../../facades/collection.facade'
 // Dev Models and Enums
 import { Book } from '../../models/book';
 import { ReduceMappers } from '../../reducers/mapper';
@@ -37,25 +35,23 @@ export class MyCartComponent implements OnInit, OnDestroy {
 
   // Subscriptions to fetch data from store
   private bookCartSubStubs = new Subscription();
-  
+
   constructor( private store: Store<{CartState, CollectionState, addressList: Address[]}>,
-                private _snackBar: MatSnackBar) { }
+                private _snackBar: MatSnackBar, private cartFacade:CartFacade,
+                private collectionFacade:CollectionFacade) { }
 
   ngOnInit() {
     // Initialising varibles
     this.clearCartDetails = false;
 
-    this.bookCartSubStubs.add(this.store.select(selectAllCartItems).subscribe( ( cartData ) => {
+    this.bookCartSubStubs.add(this.cartFacade.selectAllCartItems$.subscribe( ( cartData ) => {
       this.cartDetails = cartData;
 
       this.calculateCartValue();
     }));
-    this.bookCartSubStubs.add(this.store.select(selectAllCollectionItems).subscribe( () => {
+    this.bookCartSubStubs.add(this.collectionFacade.selectAllCollectionItems$.subscribe( () => {
       if( this.clearCartDetails === true ) {
-        const cartAction = new RemoveAllBooksFromCartAction();
-
-        this.store.dispatch( cartAction );
-
+       this.cartFacade.onRemovingAllBooksFromAction();
         this.clearCartDetails = false;
       }
     }));
@@ -83,9 +79,7 @@ export class MyCartComponent implements OnInit, OnDestroy {
 
   // Removes book from cart
   removeBookFromCart( bookId: string ) {
-    const cartAction = new RemoveBookFromCartAction( bookId );
-
-    this.store.dispatch( cartAction );
+    this.cartFacade.onRemoveBookFromCart(bookId);
   }
 
   // Payment process - requesting address details, clearing cart and adding to collection
@@ -98,11 +92,8 @@ export class MyCartComponent implements OnInit, OnDestroy {
       this._snackBar.open('Payment', 'Success', {
         duration: 3000,
       });
-
       this.clearCartDetails = true;
-
       if( !this.existingAddress ) {
-        console.log('if covered')
         this.existingAddress = {
                                   name: '',
                                   id: null,
@@ -117,11 +108,7 @@ export class MyCartComponent implements OnInit, OnDestroy {
       this.cartDetails = this.cartDetails.map( ( bookItem ) => {
         return bookItem;
       });
-      
-      const collectionAction = new AddMultipleToCollectionAction( this.cartDetails );
-
-      this.store.dispatch( collectionAction );
-
+      this.collectionFacade.onAddingMultipleAction(this.cartDetails);
       const updateAddressAction = new UpdateAddressAction( this.existingAddress );
       this.store.dispatch( updateAddressAction );
     }

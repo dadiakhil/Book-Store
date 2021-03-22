@@ -1,15 +1,30 @@
 // Dev defined actions
 import { SearchAction, SearchActionTypes } from '../actions/search.actions';
 
-const initialState = [];
+export interface SearchState {
+    search: any,
+    error: string
+}
+const initialState: SearchState = {
+        search:'',
+        error:''
 
-export function SearchReducer( state = initialState, action: SearchAction):string[] {
+}
+
+export function SearchReducer( state = initialState, action: SearchAction):SearchState {
     switch( action.type ) {
         case SearchActionTypes.Get:
-            return [...state];
+            return {
+                ...state,
+                search: action.error};
         case SearchActionTypes.Add:
-            return [...state, action.newSearch];
+            return {
+                ...state,
+                search: action.newSearch
+            };
         default:
-            return [...state];
+            return {
+                ...state
+            };
     }
 }

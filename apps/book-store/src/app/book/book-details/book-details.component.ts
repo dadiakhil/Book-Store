@@ -5,9 +5,7 @@ import { MaterialModule } from '../.././material/material.module';
 // Redux Modules
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-
-import { AddBookToCartAction, RemoveBookFromCartAction } from '../../actions/cart.actions';
-import { selectCollectionIds } from '../../reducers/collection.reducer';
+import {CollectionFacade} from '../../facades/collection.facade';
 
 //Models
 import { Book } from '../../models/book';
@@ -15,6 +13,9 @@ import { ReduceMappers } from '../../reducers/mapper';
 
 // environment details
 import { environment } from '../../../environments/environment';
+
+import {BookFacade} from '../../facades/books.facade';
+import { CartFacade } from '../../facades/cart.facade';
 
 @Component({
   selector: 'assignment-book-details',
@@ -38,17 +39,21 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
   // activate route to fetch params from URL, router to redirect to other URLs
   constructor( private store: Store<{ booksList: Book[], cartList: any  }>,
                private route: ActivatedRoute,
-               private router: Router ) { }
+               private router: Router,
+               private bookFacade:BookFacade,
+               private cartFacade:CartFacade,
+               private collectionFacade:CollectionFacade) { }
 
   ngOnInit() {
     // Local fields initialization
-    this.bookSubStubs.add(this.store.select(ReduceMappers.booksList).subscribe( ( booksList ) => {
+    this.bookSubStubs.add(this.bookFacade.book$.subscribe( ( booksList ) => {
       this.books = booksList;
-    }));;
+    }));
+    
     this.bookSubStubs.add(this.store.select(ReduceMappers.cartList).subscribe( ( cartList ) => {
       this.cartList = cartList;    
     }));
-    this.bookSubStubs.add(this.store.select( selectCollectionIds ).subscribe( ( ids ) => {
+    this.bookSubStubs.add(this.collectionFacade.selectCollectionIds$.subscribe( ( ids ) => {
       this.collectionIds = ids;
     }));
     
@@ -87,26 +92,19 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
 
   // Adding item to cart
   addBookToCart(){
-    const cartAction = new AddBookToCartAction( this.bookDetails );
-
-    this.store.dispatch( cartAction );
-
+    this.cartFacade.onAddToCart(this.bookDetails);
     this.checkItemExistsInCart();
   }
 
   // Adding book to cart and redirecting user to cart
   buyNow(){
     this.addBookToCart();
-
     this.router.navigate(['/cart']);
   }
 
   // removing item from cart
   removeBookFromCart(){
-    const cartAction = new RemoveBookFromCartAction( this.selectedBookId );
-
-    this.store.dispatch( cartAction );
-
+    this.cartFacade.onRemoveBookFromCart(this.selectedBookId)
     this.checkItemExistsInCart();
   }
 

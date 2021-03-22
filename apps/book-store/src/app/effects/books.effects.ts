@@ -21,7 +21,7 @@ export class BooksEffects {
         this.actions.pipe(
             ofType(BooksActionTypes.Fetch),
             switchMap( ( action: FetchBooks ) =>
-                this.booksService.searchBooks(action.payload).pipe(
+                this.booksService.searchBooks(action.error).pipe(
                     // Mapping google response to local Book Model
                     map( ( res: any ) => {                                                
                         if( res && res.items ) {

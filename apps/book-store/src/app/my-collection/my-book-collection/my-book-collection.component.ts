@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { selectAllCollectionItems } from '../../reducers/collection.reducer';
 import { Book } from '../../models/book';
+import {CollectionFacade} from '../../facades/collection.facade'
 
 @Component({
   selector: 'assignment-my-book-collection',
@@ -12,11 +12,12 @@ import { Book } from '../../models/book';
 export class MyBookCollectionComponent implements OnInit, OnDestroy {
   public collectionBooks: Book[];
   private collectionSub: Subscription;
-  constructor(private store: Store<{CollectionState}>) { }
+  constructor(private store: Store<{CollectionState}>,
+                private collectionFacade:CollectionFacade) { }
 
   ngOnInit() {
     // Fetching collection details from store
-    this.collectionSub = this.store.select( selectAllCollectionItems ).subscribe( ( collectionData ) => {
+    this.collectionSub = this.collectionFacade.selectAllCollectionItems$.subscribe( ( collectionData ) => {
       this.collectionBooks = collectionData;      
     });
   }
